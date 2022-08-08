@@ -1,49 +1,30 @@
 #include "main.h"
 
 /**
- * _printf - produces output acording to a format
- * @format: format specifier
- * Return: number of characters printed
- */
- 
+ * _printf - Produces output according to a format
+ * @format: Is a character string. The format string
+ * is composed of zero or more directives
+ *
+ * Return: The number of characters printed (excluding
+ * the null byte used to end output to strings)
+ **/
 int _printf(const char *format, ...)
 {
-	int i = 0, j = 0, chars_printed = 0, flag = 0;
-	va_list arg_ptr;
-	char_t opt[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"d", print_d},
-		{"i", print_i},
-		{NULL, NULL}};
-	va_start(arg_ptr, format);
+	int size;
+	va_list args;
 
-	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
+	if (format == NULL)
 		return (-1);
-	
-	while (format != NULL && format[i] != '\0') /* loop until end of the string */	
-	{
-		if (format[i] == '%' && format[i + 1] == '%') /* prints % character */
-			_putchar(format[i + 1]), i++, chars_printed++;
-		else if (format[i] == '%' && format[i + 1] != '%')
-		{
-			j = 0, flag = 0;
-			while (opt[j].code != NULL)
-			{
-				if (opt[j].code[0] == format[i + 1])
-				{
-					chars_printed += opt[j].print_func(arg_ptr), flag = 1, i++;
-					break;
-				}
-				j++;
-			} /* end of inner while */
-			if (!flag)
-				_putchar(format[i]), chars_printed++;
-		} /* end else if */
-		else
-			_putchar(format[i]), chars_printed++;
-		i++;
-	} /* end of outer while */
-	va_end(arg_ptr);
-	return (chars_printed);
-} 
+
+	size = _strlen(format);
+	if (size <= 0)
+		return (0);
+
+	va_start(args, format);
+	size = handler(format, args);
+
+	_putchar(-1);
+	va_end(args);
+
+	return (size);
+}
